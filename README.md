@@ -15,13 +15,20 @@ import (
 	"time"
 
 	"github.com/corpix/scheduler"
+	"github.com/corpix/scheduler/executor"
+	"github.com/corpix/scheduler/executor/inplace"
 	"github.com/corpix/scheduler/periodical"
 	"github.com/corpix/scheduler/work"
 )
 
 func main() {
+	e, err := executor.NewFromConfig(inplace.Config{})
+	if err != nil {
+		panic(err)
+	}
+
 	s, err := scheduler.NewFromConfig(
-		func(fn func()) { fn() },
+		e,
 		periodical.Config{
 			Tick:        1 * time.Second,
 			BacklogSize: 5,
@@ -58,6 +65,7 @@ func main() {
 
 	select {}
 }
+
 ```
 
 Now run:
