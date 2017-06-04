@@ -1,4 +1,4 @@
-package executor
+package pool
 
 // The MIT License (MIT)
 //
@@ -22,6 +22,34 @@ package executor
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-type Executor interface {
-	Execute(func())
+import (
+	"context"
+
+	"github.com/corpix/pool"
+)
+
+type Pool struct {
+	pool *pool.Pool
+}
+
+func (p *Pool) Execute(fn func()) {
+	p.pool.Feed <- pool.NewWork(
+		context.Background(),
+		func(c context.Context) {
+			select {
+			case <-c.Done():
+			default:
+				fn()
+			}
+		},
+	)
+}
+
+func New(c Config) (*Pool, error) {
+	return &Pool{
+		pool: pool.New(
+			c.Workers,
+			c.QueueSize,
+		),
+	}, nil
 }

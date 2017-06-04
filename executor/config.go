@@ -22,6 +22,18 @@ package executor
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-type Executor interface {
-	Execute(func())
+import (
+	"github.com/corpix/scheduler/executor/inplace"
+	"github.com/corpix/scheduler/executor/pool"
+)
+
+func NewFromConfig(c interface{}) (Executor, error) {
+	switch v := c.(type) {
+	case pool.Config:
+		return pool.New(v)
+	case inplace.Config:
+		return inplace.New(v)
+	default:
+		return nil, NewErrUnknownConfigType(c)
+	}
 }

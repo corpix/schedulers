@@ -27,13 +27,21 @@ import (
 	"testing"
 	"time"
 
+	"github.com/corpix/scheduler/executor"
+	"github.com/corpix/scheduler/executor/inplace"
 	"github.com/corpix/scheduler/work"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSchedule(t *testing.T) {
+	e, err := executor.NewFromConfig(inplace.Config{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	s, err := New(
-		func(fn func()) { fn() },
+		e,
 		Config{
 			Tick:        100 * time.Millisecond,
 			BacklogSize: 5,
@@ -85,8 +93,14 @@ func TestSchedule(t *testing.T) {
 }
 
 func TestScheduleUnschedule(t *testing.T) {
+	e, err := executor.NewFromConfig(inplace.Config{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	s, err := New(
-		func(fn func()) { fn() },
+		e,
 		Config{
 			Tick:        100 * time.Millisecond,
 			BacklogSize: 5,

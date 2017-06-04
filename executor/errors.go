@@ -22,6 +22,20 @@ package executor
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-type Executor interface {
-	Execute(func())
+import (
+	"fmt"
+)
+
+type ErrUnknownConfigType struct {
+	config interface{}
+}
+
+func (e *ErrUnknownConfigType) Error() string {
+	return fmt.Sprintf(
+		"Unknown config type '%T'",
+		e.config,
+	)
+}
+func NewErrUnknownConfigType(config interface{}) error {
+	return &ErrUnknownConfigType{config}
 }

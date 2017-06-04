@@ -76,7 +76,7 @@ func (p *Periodical) execute() {
 		select {
 		case work, ok := <-p.queue:
 			if ok {
-				p.executor(work.Fn)
+				p.executor.Execute(work.Fn)
 			}
 		case <-p.done:
 			return

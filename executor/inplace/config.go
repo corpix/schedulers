@@ -1,4 +1,4 @@
-package executor
+package inplace
 
 // The MIT License (MIT)
 //
@@ -22,6 +22,4 @@ package executor
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-type Executor interface {
-	Execute(func())
-}
+type Config struct{}

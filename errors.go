@@ -39,3 +39,5 @@ func (e *ErrUnknownConfigType) Error() string {
 func NewErrUnknownConfigType(config interface{}) error {
 	return &ErrUnknownConfigType{config}
 }
+
+//
