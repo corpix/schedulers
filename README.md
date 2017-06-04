@@ -21,8 +21,8 @@ func main() {
 	s, err := scheduler.NewFromConfig(
 		func(fn func()) { fn() },
 		periodical.Config{
-			Tick:      1 * time.Second,
-			QueueSize: 5,
+			Tick:        1 * time.Second,
+			BacklogSize: 5,
 		},
 	)
 	if err != nil {

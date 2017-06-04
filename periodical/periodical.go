@@ -137,7 +137,7 @@ func New(executor executor.Executor, config Config) (*Periodical, error) {
 
 		config:   config,
 		executor: executor,
-		queue:    make(chan *work.Work, config.QueueSize),
+		queue:    make(chan *work.Work, config.BacklogSize),
 		tasks:    make(map[*work.Work]time.Time),
 		done:     make(chan struct{}),
 	}

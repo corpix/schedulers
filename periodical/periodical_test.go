@@ -35,8 +35,8 @@ func TestSchedule(t *testing.T) {
 	s, err := New(
 		func(fn func()) { fn() },
 		Config{
-			Tick:      100 * time.Millisecond,
-			QueueSize: 5,
+			Tick:        100 * time.Millisecond,
+			BacklogSize: 5,
 		},
 	)
 	if err != nil {
@@ -88,8 +88,8 @@ func TestScheduleUnschedule(t *testing.T) {
 	s, err := New(
 		func(fn func()) { fn() },
 		Config{
-			Tick:      100 * time.Millisecond,
-			QueueSize: 5,
+			Tick:        100 * time.Millisecond,
+			BacklogSize: 5,
 		},
 	)
 	if err != nil {
