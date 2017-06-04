@@ -1,6 +1,8 @@
 scheduler
 ---------
 
+[![Build Status](https://travis-ci.org/corpix/scheduler.svg?branch=master)](https://travis-ci.org/corpix/scheduler)
+
 Simple scheduler with extendable scheduling algorithms.
 
 ## Example
