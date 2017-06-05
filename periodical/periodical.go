@@ -31,10 +31,6 @@ import (
 	"github.com/corpix/scheduler/work"
 )
 
-type Schedule struct {
-	Every time.Duration
-}
-
 type Periodical struct {
 	*sync.Mutex
 
