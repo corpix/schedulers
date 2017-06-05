@@ -23,15 +23,14 @@ package scheduler
 // THE SOFTWARE.
 
 import (
-	"github.com/corpix/scheduler/work"
-
 	"github.com/corpix/scheduler/executor"
 	"github.com/corpix/scheduler/periodical"
+	"github.com/corpix/scheduler/task"
 )
 
 type Scheduler interface {
-	Unschedule(*work.Work)
-	Schedule(*work.Work) error
+	Unschedule(*task.Task)
+	Schedule(*task.Task) error
 	Close()
 }
 

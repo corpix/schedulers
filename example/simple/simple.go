@@ -8,7 +8,7 @@ import (
 	"github.com/corpix/scheduler/executor"
 	"github.com/corpix/scheduler/executor/inplace"
 	"github.com/corpix/scheduler/periodical"
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/scheduler/task"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	defer s.Close()
 
 	err = s.Schedule(
-		work.New(
+		task.New(
 			&periodical.Schedule{Every: 5 * time.Second},
 			func() {
 				fmt.Println("I am running", time.Now())
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	err = s.Schedule(
-		work.New(
+		task.New(
 			&periodical.Schedule{Every: 10 * time.Second},
 			func() {
 				fmt.Println("Me running too", time.Now())

@@ -1,4 +1,4 @@
-package work
+package task
 
 // The MIT License (MIT)
 //
@@ -26,11 +26,11 @@ import (
 	"github.com/corpix/scheduler/schedule"
 )
 
-type Work struct {
+type Task struct {
 	schedule.Schedule
 	Fn func()
 }
 
-func New(s schedule.Schedule, fn func()) *Work {
-	return &Work{s, fn}
+func New(s schedule.Schedule, fn func()) *Task {
+	return &Task{s, fn}
 }

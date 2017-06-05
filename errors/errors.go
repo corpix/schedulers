@@ -27,7 +27,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/scheduler/task"
 )
 
 type ErrUnknownSchedule struct {
@@ -49,17 +49,17 @@ func NewErrUnknownSchedule(want, got interface{}) error {
 //
 
 type ErrAlreadyScheduled struct {
-	work *work.Work
+	task *task.Task
 }
 
 func (e *ErrAlreadyScheduled) Error() string {
 	return fmt.Sprintf(
-		"Work '%s' already scheduled",
-		spew.Sdump(e.work),
+		"Task '%s' already scheduled",
+		spew.Sdump(e.task),
 	)
 }
-func NewErrAlreadyScheduled(w *work.Work) error {
-	return &ErrAlreadyScheduled{w}
+func NewErrAlreadyScheduled(t *task.Task) error {
+	return &ErrAlreadyScheduled{t}
 }
 
 //

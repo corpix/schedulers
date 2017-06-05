@@ -28,7 +28,7 @@ import (
 
 	"github.com/corpix/scheduler/errors"
 	"github.com/corpix/scheduler/executor"
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/scheduler/task"
 )
 
 type Periodical struct {
@@ -36,8 +36,8 @@ type Periodical struct {
 
 	config   Config
 	executor executor.Executor
-	queue    chan *work.Work
-	tasks    map[*work.Work]time.Time
+	queue    chan *task.Task
+	tasks    map[*task.Task]time.Time
 	done     chan struct{}
 }
 
@@ -50,11 +50,11 @@ func (p *Periodical) plan() {
 	for {
 		p.Lock()
 		now := time.Now()
-		for work, ts := range p.tasks {
-			timeshift := ts.Add(work.Schedule.(*Schedule).Every)
+		for t, ts := range p.tasks {
+			timeshift := ts.Add(t.Schedule.(*Schedule).Every)
 			if timeshift.Equal(now) || timeshift.Before(now) {
-				p.tasks[work] = now
-				p.queue <- work
+				p.tasks[t] = now
+				p.queue <- t
 			}
 		}
 		p.Unlock()
@@ -70,9 +70,9 @@ func (p *Periodical) plan() {
 func (p *Periodical) execute() {
 	for {
 		select {
-		case work, ok := <-p.queue:
+		case t, ok := <-p.queue:
 			if ok {
-				p.executor.Execute(work.Fn)
+				p.executor.Execute(t.Fn)
 			}
 		case <-p.done:
 			return
@@ -80,17 +80,17 @@ func (p *Periodical) execute() {
 	}
 }
 
-func (p Periodical) Unschedule(w *work.Work) {
+func (p Periodical) Unschedule(w *task.Task) {
 	p.Lock()
 	defer p.Unlock()
 	p.unschedule(w)
 }
 
-func (p Periodical) unschedule(w *work.Work) {
+func (p Periodical) unschedule(w *task.Task) {
 	delete(p.tasks, w)
 }
 
-func (p *Periodical) Schedule(w *work.Work) error {
+func (p *Periodical) Schedule(w *task.Task) error {
 	_, ok := w.Schedule.(*Schedule)
 	if !ok {
 		return errors.NewErrUnknownSchedule(
@@ -105,7 +105,7 @@ func (p *Periodical) Schedule(w *work.Work) error {
 	return p.schedule(w)
 }
 
-func (p *Periodical) schedule(w *work.Work) error {
+func (p *Periodical) schedule(w *task.Task) error {
 	_, ok := p.tasks[w]
 	if ok {
 		return errors.NewErrAlreadyScheduled(w)
@@ -122,7 +122,7 @@ func (p *Periodical) Close() {
 	p.Lock()
 	defer p.Unlock()
 
-	p.tasks = map[*work.Work]time.Time{}
+	p.tasks = map[*task.Task]time.Time{}
 	close(p.done)
 	close(p.queue)
 }
@@ -133,8 +133,8 @@ func New(executor executor.Executor, config Config) (*Periodical, error) {
 
 		config:   config,
 		executor: executor,
-		queue:    make(chan *work.Work, config.BacklogSize),
-		tasks:    make(map[*work.Work]time.Time),
+		queue:    make(chan *task.Task, config.BacklogSize),
+		tasks:    make(map[*task.Task]time.Time),
 		done:     make(chan struct{}),
 	}
 	p.run()
