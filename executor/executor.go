@@ -22,6 +22,10 @@ package executor
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import (
+	"github.com/corpix/scheduler/work"
+)
+
 type Executor interface {
-	Execute(func())
+	Execute(work.Work)
 }

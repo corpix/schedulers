@@ -26,13 +26,15 @@ import (
 	"context"
 
 	"github.com/corpix/pool"
+
+	"github.com/corpix/scheduler/work"
 )
 
 type Pool struct {
 	pool *pool.Pool
 }
 
-func (p *Pool) Execute(fn func()) {
+func (p *Pool) Execute(fn work.Work) {
 	p.pool.Feed <- pool.NewWork(
 		context.Background(),
 		func(c context.Context) {

@@ -22,9 +22,13 @@ package inplace
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import (
+	"github.com/corpix/scheduler/work"
+)
+
 type Inplace struct{}
 
-func (e *Inplace) Execute(fn func()) {
+func (e *Inplace) Execute(fn work.Work) {
 	fn()
 }
 
