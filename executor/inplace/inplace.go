@@ -28,6 +28,6 @@ func (e *Inplace) Execute(fn func()) {
 	fn()
 }
 
-func New(c Config) (*Inplace, error) {
+func NewFromConfig(c Config) (*Inplace, error) {
 	return &Inplace{}, nil
 }

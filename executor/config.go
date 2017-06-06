@@ -30,9 +30,9 @@ import (
 func NewFromConfig(c interface{}) (Executor, error) {
 	switch v := c.(type) {
 	case pool.Config:
-		return pool.New(v)
+		return pool.NewFromConfig(v)
 	case inplace.Config:
-		return inplace.New(v)
+		return inplace.NewFromConfig(v)
 	default:
 		return nil, NewErrUnknownConfigType(c)
 	}

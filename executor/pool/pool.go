@@ -45,7 +45,7 @@ func (p *Pool) Execute(fn func()) {
 	)
 }
 
-func New(c Config) (*Pool, error) {
+func NewFromConfig(c Config) (*Pool, error) {
 	return &Pool{
 		pool: pool.New(
 			c.Workers,
