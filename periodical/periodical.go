@@ -80,16 +80,6 @@ func (p *Periodical) execute() {
 	}
 }
 
-func (p Periodical) Unschedule(w *task.Task) {
-	p.Lock()
-	defer p.Unlock()
-	p.unschedule(w)
-}
-
-func (p Periodical) unschedule(w *task.Task) {
-	delete(p.tasks, w)
-}
-
 func (p *Periodical) Schedule(w *task.Task) error {
 	_, ok := w.Schedule.(*Schedule)
 	if !ok {
@@ -116,6 +106,16 @@ func (p *Periodical) schedule(w *task.Task) error {
 		Add(-1 * w.Schedule.(*Schedule).Every)
 
 	return nil
+}
+
+func (p Periodical) Unschedule(w *task.Task) {
+	p.Lock()
+	defer p.Unlock()
+	p.unschedule(w)
+}
+
+func (p Periodical) unschedule(w *task.Task) {
+	delete(p.tasks, w)
 }
 
 func (p *Periodical) Close() {

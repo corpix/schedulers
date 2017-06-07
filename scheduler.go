@@ -29,8 +29,8 @@ import (
 )
 
 type Scheduler interface {
-	Unschedule(*task.Task)
 	Schedule(*task.Task) error
+	Unschedule(*task.Task)
 	Close()
 }
 
