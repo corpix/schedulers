@@ -1,0 +1,12 @@
+package: github.com/corpix/scheduler
+import:
+- package: github.com/corpix/pool
+- package: github.com/davecgh/go-spew
+  version: v1.1.0
+  subpackages:
+  - spew
+testImport:
+- package: github.com/stretchr/testify
+  version: v1.1.4
+  subpackages:
+  - assert
