@@ -8,7 +8,6 @@ import (
 	"github.com/corpix/scheduler/executor"
 	"github.com/corpix/scheduler/executor/inplace"
 	"github.com/corpix/scheduler/task"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSchedule(t *testing.T) {
@@ -34,40 +33,29 @@ func TestSchedule(t *testing.T) {
 	w := &sync.WaitGroup{}
 	w.Add(2)
 
-	task5emited := false
-	task5 := task.New(
-		&Schedule{Every: 300 * time.Millisecond},
-		func() {
-			if !task5emited {
-				task5emited = true
-				w.Done()
-			}
-		},
+	err = s.Schedule(
+		task.New(
+			&Schedule{Every: 300 * time.Millisecond},
+			func() { w.Done() },
+		),
 	)
-	err = s.Schedule(task5)
 	if err != nil {
-		panic(err)
+		t.Error(err)
+		return
 	}
 
-	task10emited := false
-	task10 := task.New(
-		&Schedule{Every: 300 * time.Millisecond},
-		func() {
-			if !task10emited {
-				task10emited = true
-				w.Done()
-			}
-		},
+	err = s.Schedule(
+		task.New(
+			&Schedule{Every: 300 * time.Millisecond},
+			func() { w.Done() },
+		),
 	)
-	err = s.Schedule(task10)
 	if err != nil {
-		panic(err)
+		t.Error(err)
+		return
 	}
 
 	w.Wait()
-
-	assert.Equal(t, true, task5emited)
-	assert.Equal(t, true, task10emited)
 }
 
 func TestScheduleUnschedule(t *testing.T) {
@@ -91,60 +79,29 @@ func TestScheduleUnschedule(t *testing.T) {
 	defer s.Close()
 
 	w := &sync.WaitGroup{}
-	w.Add(2)
 
-	task5emited := 0
-	task5 := task.New(
+	task1 := task.New(
 		&Schedule{Every: 1 * time.Microsecond},
-		func() {
-			task5emited++
-			w.Done()
-		},
+		func() { w.Done() },
 	)
-	err = s.Schedule(task5)
+	err = s.Schedule(task1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	task10emited := 0
-	task10 := task.New(
+	task2 := task.New(
 		&Schedule{Every: 1 * time.Microsecond},
-		func() {
-			task10emited++
-			w.Done()
-		},
+		func() { w.Done() },
 	)
-	err = s.Schedule(task10)
+	err = s.Schedule(task2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
+
+	s.Unschedule(task1)
+	s.Unschedule(task2)
 
 	w.Wait()
-
-	s.Unschedule(task5)
-	s.Unschedule(task10)
-
-	time.Sleep(200 * time.Millisecond)
-
-	w.Add(2)
-	err = s.Schedule(task5)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	err = s.Schedule(task10)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	w.Wait()
-
-	s.Unschedule(task5)
-	s.Unschedule(task10)
-
-	assert.Equal(t, 2, task5emited)
-	assert.Equal(t, 2, task10emited)
 }
