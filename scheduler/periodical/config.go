@@ -5,6 +5,6 @@ import (
 )
 
 type Config struct {
-	Tick        time.Duration
-	BacklogSize int8
+	Tick      time.Duration
+	QueueSize int8
 }

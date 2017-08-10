@@ -1,8 +1,8 @@
 package task
 
 import (
-	"github.com/corpix/scheduler/schedule"
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/schedulers/schedule"
+	"github.com/corpix/schedulers/work"
 )
 
 type Task struct {

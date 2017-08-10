@@ -5,7 +5,7 @@ import (
 
 	"github.com/corpix/pool"
 
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/schedulers/work"
 )
 
 type Pool struct {

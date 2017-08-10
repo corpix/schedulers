@@ -1,17 +1,13 @@
-hash: 59fe631127afb7bb33d6f67bf733cd8126f5ed6514f538d86c8176d15eca12d9
-updated: 2017-07-12T20:37:52.47340737Z
+hash: e1688201198b522c17671220482a1fb46662095e74e67f086babd0fe99a65efe
+updated: 2017-08-10T10:25:30.939466636Z
 imports:
 - name: github.com/corpix/pool
-  version: a3b3007b6f9da5b63c908906fd2238dc1fb5c7d3
+  version: 2396288b6b816f5330c0b92798177655e2509d06
 - name: github.com/davecgh/go-spew
   version: 346938d642f2ec3594ed81d874461961cd0faa76
   subpackages:
   - spew
 testImports:
-- name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
-  subpackages:
-  - difflib
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:

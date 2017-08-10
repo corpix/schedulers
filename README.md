@@ -1,84 +1,25 @@
-scheduler
----------
+schedulers
+----------
 
-[![Build Status](https://travis-ci.org/corpix/scheduler.svg?branch=master)](https://travis-ci.org/corpix/scheduler)
+[![Build Status](https://travis-ci.org/corpix/schedulers.svg?branch=master)](https://travis-ci.org/corpix/schedulers)
 
 Simple scheduler with extendable scheduling algorithms.
 
+Supported algorithms:
+
+- `perodical` schedules tasks periodically, e.g. "every 5 minutes"
+
 ## Example
-
-``` go
-package main
-
-import (
-	"fmt"
-	"time"
-
-	"github.com/corpix/scheduler"
-	"github.com/corpix/scheduler/executor"
-	"github.com/corpix/scheduler/executor/inplace"
-	"github.com/corpix/scheduler/periodical"
-	"github.com/corpix/scheduler/task"
-)
-
-func main() {
-	e, err := executor.NewFromConfig(inplace.Config{})
-	if err != nil {
-		panic(err)
-	}
-
-	s, err := scheduler.NewFromConfig(
-		e,
-		periodical.Config{
-			Tick:        1 * time.Second,
-			BacklogSize: 5,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	err = s.Schedule(
-		task.New(
-			&periodical.Schedule{Every: 5 * time.Second},
-			func() {
-				fmt.Println("I am running", time.Now())
-			},
-		),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	err = s.Schedule(
-		task.New(
-			&periodical.Schedule{Every: 10 * time.Second},
-			func() {
-				fmt.Println("Me running too", time.Now())
-			},
-		),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	select {}
-}
-
-```
-
-Now run:
 
 ``` console
 $ go run ./example/simple/simple.go
-I am running 2017-06-04 20:32:51.293647757 +0000 UTC
-Me running too 2017-06-04 20:32:51.293740099 +0000 UTC
-I am running 2017-06-04 20:32:56.294000904 +0000 UTC
-I am running 2017-06-04 20:33:01.29451009 +0000 UTC
-Me running too 2017-06-04 20:33:01.2945496 +0000 UTC
-I am running 2017-06-04 20:33:06.294949678 +0000 UTC
-Me running too 2017-06-04 20:33:11.295449691 +0000 UTC
-I am running 2017-06-04 20:33:11.295468104 +0000 UTC
-...
+I am running 2017-08-10 10:24:17.253772524 +0000 UTC
+Me running too 2017-08-10 10:24:18.253845055 +0000 UTC
+I am running 2017-08-10 10:24:22.254274021 +0000 UTC
+I am running 2017-08-10 10:24:27.254808939 +0000 UTC
+Me running too 2017-08-10 10:24:28.254935728 +0000 UTC
+I am running 2017-08-10 10:24:32.255383238 +0000 UTC
+Me running too 2017-08-10 10:24:38.256078048 +0000 UTC
+Me running too 2017-08-10 10:24:48.257107815 +0000 UTC
+Done
 ```

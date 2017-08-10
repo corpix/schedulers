@@ -4,14 +4,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/corpix/scheduler/errors"
-	"github.com/corpix/scheduler/executor"
-	"github.com/corpix/scheduler/task"
+	"github.com/corpix/schedulers/errors"
+	"github.com/corpix/schedulers/executors/executor"
+	"github.com/corpix/schedulers/task"
 )
 
 type Periodical struct {
 	*sync.Mutex
-
 	config   Config
 	executor executor.Executor
 	queue    chan *task.Task
@@ -26,13 +25,18 @@ func (p *Periodical) run() {
 
 func (p *Periodical) plan() {
 	for {
+		var (
+			now = time.Now()
+		)
+
 		p.Lock()
-		now := time.Now()
 		for t, ts := range p.tasks {
 			timeshift := ts.Add(t.Schedule.(*Schedule).Every)
 			if timeshift.Equal(now) || timeshift.Before(now) {
 				p.tasks[t] = now
-				p.queue <- t
+				select {
+				case p.queue <- t:
+				}
 			}
 		}
 		p.Unlock()
@@ -86,13 +90,13 @@ func (p *Periodical) schedule(w *task.Task) error {
 	return nil
 }
 
-func (p Periodical) Unschedule(w *task.Task) {
+func (p *Periodical) Unschedule(w *task.Task) {
 	p.Lock()
 	defer p.Unlock()
 	p.unschedule(w)
 }
 
-func (p Periodical) unschedule(w *task.Task) {
+func (p *Periodical) unschedule(w *task.Task) {
 	delete(p.tasks, w)
 }
 
@@ -101,17 +105,16 @@ func (p *Periodical) Close() {
 	defer p.Unlock()
 
 	p.tasks = map[*task.Task]time.Time{}
-	close(p.done)
 	close(p.queue)
+	close(p.done)
 }
 
-func New(executor executor.Executor, config Config) (*Periodical, error) {
+func NewFromConfig(c Config, e executor.Executor) (*Periodical, error) {
 	p := &Periodical{
-		Mutex: &sync.Mutex{},
-
-		config:   config,
-		executor: executor,
-		queue:    make(chan *task.Task, config.BacklogSize),
+		Mutex:    &sync.Mutex{},
+		config:   c,
+		executor: e,
+		queue:    make(chan *task.Task, c.QueueSize),
 		tasks:    make(map[*task.Task]time.Time),
 		done:     make(chan struct{}),
 	}

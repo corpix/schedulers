@@ -1,21 +1,22 @@
-package scheduler
+package schedulers
 
 import (
 	"fmt"
 )
 
-type ErrUnknownConfigType struct {
-	config interface{}
+type ErrUnknownSchedulerType struct {
+	t string
 }
 
-func (e *ErrUnknownConfigType) Error() string {
+func (e *ErrUnknownSchedulerType) Error() string {
 	return fmt.Sprintf(
-		"Unknown config type '%T'",
-		e.config,
+		"Unknown scheduler type '%s'",
+		e.t,
 	)
 }
-func NewErrUnknownConfigType(config interface{}) error {
-	return &ErrUnknownConfigType{config}
+
+func NewErrUnknownSchedulerType(t string) error {
+	return &ErrUnknownSchedulerType{t}
 }
 
 //

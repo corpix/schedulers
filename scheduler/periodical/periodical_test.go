@@ -5,24 +5,29 @@ import (
 	"testing"
 	"time"
 
-	"github.com/corpix/scheduler/executor"
-	"github.com/corpix/scheduler/executor/inplace"
-	"github.com/corpix/scheduler/task"
+	"github.com/corpix/schedulers/executors"
+	"github.com/corpix/schedulers/executors/executor/inplace"
+	"github.com/corpix/schedulers/task"
 )
 
 func TestSchedule(t *testing.T) {
-	e, err := executor.NewFromConfig(inplace.Config{})
+	e, err := executors.NewFromConfig(
+		executors.Config{
+			Type:    "inplace",
+			Inplace: inplace.Config{},
+		},
+	)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	s, err := New(
-		e,
+	s, err := NewFromConfig(
 		Config{
-			Tick:        100 * time.Millisecond,
-			BacklogSize: 5,
+			Tick:      100 * time.Millisecond,
+			QueueSize: 5,
 		},
+		e,
 	)
 	if err != nil {
 		t.Error(err)
@@ -59,18 +64,23 @@ func TestSchedule(t *testing.T) {
 }
 
 func TestScheduleUnschedule(t *testing.T) {
-	e, err := executor.NewFromConfig(inplace.Config{})
+	e, err := executors.NewFromConfig(
+		executors.Config{
+			Type:    "inplace",
+			Inplace: inplace.Config{},
+		},
+	)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	s, err := New(
-		e,
+	s, err := NewFromConfig(
 		Config{
-			Tick:        100 * time.Millisecond,
-			BacklogSize: 5,
+			Tick:      100 * time.Millisecond,
+			QueueSize: 5,
 		},
+		e,
 	)
 	if err != nil {
 		t.Error(err)

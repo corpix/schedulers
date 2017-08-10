@@ -1,7 +1,7 @@
 package inplace
 
 import (
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/schedulers/work"
 )
 
 type Inplace struct{}

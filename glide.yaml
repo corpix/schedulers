@@ -1,4 +1,4 @@
-package: github.com/corpix/scheduler
+package: github.com/corpix/schedulers
 import:
 - package: github.com/corpix/pool
 - package: github.com/davecgh/go-spew

@@ -1,7 +1,7 @@
 package executor
 
 import (
-	"github.com/corpix/scheduler/work"
+	"github.com/corpix/schedulers/work"
 )
 
 type Executor interface {

@@ -2,56 +2,92 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
-	"github.com/corpix/scheduler"
-	"github.com/corpix/scheduler/executor"
-	"github.com/corpix/scheduler/executor/inplace"
-	"github.com/corpix/scheduler/periodical"
-	"github.com/corpix/scheduler/task"
+	"github.com/corpix/schedulers"
+	"github.com/corpix/schedulers/executors"
+	"github.com/corpix/schedulers/executors/executor/inplace"
+	"github.com/corpix/schedulers/scheduler/periodical"
+	"github.com/corpix/schedulers/task"
 )
 
 func main() {
-	e, err := executor.NewFromConfig(inplace.Config{})
+	e, err := executors.NewFromConfig(
+		executors.Config{
+			Type:    executors.InplaceExecutorType,
+			Inplace: inplace.Config{},
+		},
+	)
 	if err != nil {
 		panic(err)
 	}
 
-	s, err := scheduler.NewFromConfig(
-		e,
-		periodical.Config{
-			Tick:        1 * time.Second,
-			BacklogSize: 5,
+	s, err := schedulers.NewFromConfig(
+		schedulers.Config{
+			Type: schedulers.PeriodicalSchedulerType,
+			Periodical: periodical.Config{
+				Tick:      1 * time.Second,
+				QueueSize: 5,
+			},
 		},
+		e,
 	)
 	if err != nil {
 		panic(err)
 	}
 	defer s.Close()
 
-	err = s.Schedule(
-		task.New(
-			&periodical.Schedule{Every: 5 * time.Second},
-			func() {
-				fmt.Println("I am running", time.Now())
-			},
-		),
+	var (
+		wg = &sync.WaitGroup{}
+
+		task1Counter = 4
+		task2Counter = 4
+
+		task1 *task.Task
+		task2 *task.Task
 	)
+
+	task1 = task.New(
+		&periodical.Schedule{Every: 5 * time.Second},
+		func() {
+			if task1Counter == 0 {
+				s.Unschedule(task1)
+				wg.Done()
+				return
+			}
+
+			fmt.Println("I am running", time.Now())
+			task1Counter--
+		},
+	)
+	wg.Add(1)
+
+	task2 = task.New(
+		&periodical.Schedule{Every: 10 * time.Second},
+		func() {
+			if task2Counter == 0 {
+				s.Unschedule(task2)
+				wg.Done()
+				return
+			}
+
+			fmt.Println("Me running too", time.Now())
+			task2Counter--
+		},
+	)
+	wg.Add(1)
+
+	err = s.Schedule(task1)
 	if err != nil {
 		panic(err)
 	}
 
-	err = s.Schedule(
-		task.New(
-			&periodical.Schedule{Every: 10 * time.Second},
-			func() {
-				fmt.Println("Me running too", time.Now())
-			},
-		),
-	)
+	err = s.Schedule(task2)
 	if err != nil {
 		panic(err)
 	}
 
-	select {}
+	wg.Wait()
+	fmt.Println("Done")
 }
