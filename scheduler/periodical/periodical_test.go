@@ -7,6 +7,7 @@ import (
 
 	"github.com/corpix/schedulers/executors"
 	"github.com/corpix/schedulers/executors/executor/inplace"
+	schedule "github.com/corpix/schedulers/schedules/schedule/periodical"
 	"github.com/corpix/schedulers/task"
 )
 
@@ -40,7 +41,7 @@ func TestSchedule(t *testing.T) {
 
 	err = s.Schedule(
 		task.New(
-			&Schedule{Every: 300 * time.Millisecond},
+			schedule.Schedule{Every: 300 * time.Millisecond},
 			func() { w.Done() },
 		),
 	)
@@ -51,7 +52,7 @@ func TestSchedule(t *testing.T) {
 
 	err = s.Schedule(
 		task.New(
-			&Schedule{Every: 300 * time.Millisecond},
+			schedule.Schedule{Every: 300 * time.Millisecond},
 			func() { w.Done() },
 		),
 	)
@@ -91,7 +92,7 @@ func TestScheduleUnschedule(t *testing.T) {
 	w := &sync.WaitGroup{}
 
 	task1 := task.New(
-		&Schedule{Every: 1 * time.Microsecond},
+		schedule.Schedule{Every: 1 * time.Microsecond},
 		func() { w.Done() },
 	)
 	err = s.Schedule(task1)
@@ -101,7 +102,7 @@ func TestScheduleUnschedule(t *testing.T) {
 	}
 
 	task2 := task.New(
-		&Schedule{Every: 1 * time.Microsecond},
+		schedule.Schedule{Every: 1 * time.Microsecond},
 		func() { w.Done() },
 	)
 	err = s.Schedule(task2)

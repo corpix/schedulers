@@ -9,6 +9,7 @@ import (
 	"github.com/corpix/schedulers/executors"
 	"github.com/corpix/schedulers/executors/executor/inplace"
 	"github.com/corpix/schedulers/scheduler/periodical"
+	schedule "github.com/corpix/schedulers/schedules/schedule/periodical"
 	"github.com/corpix/schedulers/task"
 )
 
@@ -49,7 +50,7 @@ func main() {
 	)
 
 	task1 = task.New(
-		&periodical.Schedule{Every: 5 * time.Second},
+		schedule.Schedule{Every: 1 * time.Second},
 		func() {
 			if task1Counter == 0 {
 				s.Unschedule(task1)
@@ -64,7 +65,7 @@ func main() {
 	wg.Add(1)
 
 	task2 = task.New(
-		&periodical.Schedule{Every: 10 * time.Second},
+		schedule.Schedule{Every: 3 * time.Second},
 		func() {
 			if task2Counter == 0 {
 				s.Unschedule(task2)

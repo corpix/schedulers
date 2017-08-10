@@ -6,6 +6,7 @@ import (
 
 	"github.com/corpix/schedulers/errors"
 	"github.com/corpix/schedulers/executors/executor"
+	schedule "github.com/corpix/schedulers/schedules/schedule/periodical"
 	"github.com/corpix/schedulers/task"
 )
 
@@ -31,7 +32,7 @@ func (p *Periodical) plan() {
 
 		p.Lock()
 		for t, ts := range p.tasks {
-			timeshift := ts.Add(t.Schedule.(*Schedule).Every)
+			timeshift := ts.Add(t.Schedule.(schedule.Schedule).Every)
 			if timeshift.Equal(now) || timeshift.Before(now) {
 				p.tasks[t] = now
 				select {
@@ -63,10 +64,10 @@ func (p *Periodical) execute() {
 }
 
 func (p *Periodical) Schedule(w *task.Task) error {
-	_, ok := w.Schedule.(*Schedule)
+	_, ok := w.Schedule.(schedule.Schedule)
 	if !ok {
 		return errors.NewErrUnknownSchedule(
-			&Schedule{},
+			schedule.Schedule{},
 			w.Schedule,
 		)
 	}
@@ -85,7 +86,7 @@ func (p *Periodical) schedule(w *task.Task) error {
 
 	p.tasks[w] = time.
 		Now().
-		Add(-1 * w.Schedule.(*Schedule).Every)
+		Add(-1 * w.Schedule.(schedule.Schedule).Every)
 
 	return nil
 }

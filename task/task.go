@@ -1,7 +1,7 @@
 package task
 
 import (
-	"github.com/corpix/schedulers/schedule"
+	"github.com/corpix/schedulers/schedules/schedule"
 	"github.com/corpix/schedulers/work"
 )
 
