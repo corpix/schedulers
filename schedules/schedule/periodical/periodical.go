@@ -8,6 +8,6 @@ type Schedule struct {
 	Every time.Duration
 }
 
-func New(e time.Duration) *Schedule {
-	return &Schedule{Every: e}
+func New(e time.Duration) Schedule {
+	return Schedule{Every: e}
 }
