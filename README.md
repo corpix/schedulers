@@ -7,7 +7,7 @@ Simple scheduler with extendable scheduling algorithms.
 
 Supported algorithms:
 
-- `perodical` schedules tasks periodically, e.g. "every 5 minutes"
+- `periodical` schedules tasks periodically, e.g. "every 5 minutes"
 
 ## Example
 
